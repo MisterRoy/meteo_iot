@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, View, Dimensions, ScrollView,
 TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -8,14 +8,38 @@ import Chart from '../components/Chart';
 import Button from '../components/Button';
 import { appColors } from '../styles/colors'
 
+import { db } from '../services/Firebase';
+import { ref, onValue, get, child, getDatabase } from '@firebase/database';
+import {formatDataFromFirebase, getDataFromFirebase} from '../services/RtdbFirebase';
+
 
 const temperatures = [23.6, 23.7, 23.8, 23.9, 24.0, 24.2];
 const humidity = [73.86, 73.88, 73.88, 73.97, 73.99, 74.10];
 
 
+
 const HomeScreen = () => {
-  const [temp, setTemp] = useState(temperatures);
+
+  const [temp, setTemp] = useState([1, 2, 3]);
   const [hum, setHumidity] = useState(humidity)
+  const [pres, setPressure] = useState([1, 2, 3])
+
+  useEffect(() =>{
+    const _db = getDatabase();
+    const myRef = ref(_db, '/');
+    onValue(myRef, snapshot =>{
+      console.log('New event !');
+      let data = snapshot.val();
+      data = formatDataFromFirebase(data);
+
+      setTemp(data['temperature']);
+      setHumidity(data['humidity']);
+      setPressure(data['pressure']);
+    }, err =>{
+      console.log(err);
+    });
+  }, []);
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -23,8 +47,8 @@ const HomeScreen = () => {
 
       <InfoPanel
         temperature={temp[temp.length -1]}
-        humidity={56.17}
-        pressure={1.04}
+        humidity={hum[hum.length -1]}
+        pressure={pres[pres.length -1]}
       />
 
       <ScrollView
@@ -44,8 +68,8 @@ const HomeScreen = () => {
 
         <Chart
           title='Pressure'
-          data={temp}
-          unit='%'
+          data={pres}
+          unit='hPa'
         />
 
       </ScrollView>
@@ -59,9 +83,6 @@ const HomeScreen = () => {
         }
       /> */}
 
-      
-
-      
 
     </SafeAreaView>
   )
