@@ -18,17 +18,17 @@ function getDayName(dayNumber)
     case 0:
       return 'Dimanche';
     case 1:
-      return 'Mardi';
-    case 2:
-      return 'Mercredi';
-    case 3:
-      return 'Jeudi';
-    case 4:
-      return 'Vendredi';
-    case 5:
-      return 'Samedi';
-    case 6:
       return 'Lundi';
+    case 2:
+      return 'Mardi';
+    case 3:
+      return 'Mercredi';
+    case 4:
+      return 'Jeudi';
+    case 5:
+      return 'Vendredi';
+    case 6:
+      return 'Samedi';
   }
 }
 
